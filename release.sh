@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -e
 RELEASE_SH_VER=1.0.9-STAGING
 RELEASE_SH_DIR=$(dirname "${BASH_SOURCE[0]}")
 

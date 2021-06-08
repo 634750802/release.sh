@@ -34,7 +34,7 @@ function distribute-releasing-assets() {
   local filename="release.sh.$1.zip"
 
   # release assets wherever you want other than github
-  gh release create "$1" "$filename"
+  gh release create "$1" "$filename" --title "$1" --notes ""
 
   rm "$filename"
   return 0

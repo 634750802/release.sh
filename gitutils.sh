@@ -5,6 +5,11 @@ function assert-work-tree-clean() {
   fi
 }
 
+function git-fetch-tags() {
+  git fetch --tags
+  return $?
+}
+
 function work-tree-clean() {
   if [[ -z $(git status -s) ]]; then
     return 0
@@ -26,4 +31,9 @@ function git-delete-tag() {
   local tag=$1
   git tag -d "$tag"
   git push --delete origin "$tag"
+}
+
+function git-tag-exists() {
+  git tag -l | grep -q -e "$1"
+  return $?
 }

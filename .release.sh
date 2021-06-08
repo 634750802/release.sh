@@ -23,7 +23,7 @@ function distribute-staging-assets() {
   local filename="release.sh.$1.staging.zip"
 
   gh release delete -y "$1-staging"
-  if !  gh release create -p "$2" "$filename" --title "$1-staging" --notes ""; then
+  if ! gh release create -p "$2" "$filename" --title "$1-staging" --notes ""; then
     return 1
   fi
 
@@ -46,6 +46,7 @@ function distribute-releasing-assets() {
   local filename="release.sh.$1.zip"
 
   # release assets wherever you want other than github
+  gh release delete -y "$1-staging"
   if ! gh release create "$2" "$filename" --title "$1" --notes ""; then
     return 1
   fi
@@ -54,7 +55,7 @@ function distribute-releasing-assets() {
   return 0
 }
 
-function set-release-version() {
+function set-releasing-version() {
   local new_version=$1
   local fmod
   fmod=$(get-mod release.sh)

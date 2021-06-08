@@ -12,8 +12,9 @@ function build-staging-sources() {
 function distribute-staging-assets() {
   local filename="release.sh.$1.staging.zip"
 
-  gh release delete -y "$1-staging"
-  gh release create -p "$1-staging" "$filename"
+  if ! gh release delete -y "$1-staging" && gh release create -p "$1-staging" "$filename" --title "$1-staging" --notes ""; then
+    return 1
+  fi
 
   rm "$filename"
   return 0
@@ -34,7 +35,9 @@ function distribute-releasing-assets() {
   local filename="release.sh.$1.zip"
 
   # release assets wherever you want other than github
-  gh release create "$1" "$filename" --title "$1" --notes ""
+  if ! gh release create "$1" "$filename" --title "$1" --notes ""; then
+    return 1
+  fi
 
   rm "$filename"
   return 0

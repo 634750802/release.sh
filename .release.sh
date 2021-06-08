@@ -13,7 +13,7 @@ function distribute-staging-assets() {
   local filename="release.sh.$1.staging.zip"
 
   gh release delete -y "$1-staging"
-  if !  gh release create -p "$1-staging" "$filename" --title "$1-staging" --notes ""; then
+  if !  gh release create -p "$2" "$filename" --title "$1-staging" --notes ""; then
     return 1
   fi
 
@@ -36,7 +36,7 @@ function distribute-releasing-assets() {
   local filename="release.sh.$1.zip"
 
   # release assets wherever you want other than github
-  if ! gh release create "$1" "$filename" --title "$1" --notes ""; then
+  if ! gh release create "$2" "$filename" --title "$1" --notes ""; then
     return 1
   fi
 

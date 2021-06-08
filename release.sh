@@ -208,7 +208,7 @@ function release() {
 
   # distribute build results
   echo-log info "distributing staging assets"
-  if ! distribute-releasing-assets "$project_version" "$release_tag"; then
+  if ! distribute-releasing-assets "$project_version" "$release_tag" "$staging_tag"; then
     echo-exit 1 "failed to distribute staging assets"
   fi
 

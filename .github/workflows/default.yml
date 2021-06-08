@@ -28,3 +28,5 @@ jobs:
       # Runs a single command using the runners shell
       - name: stage commits
         run: ./release.sh stage release.sh .
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

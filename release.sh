@@ -107,7 +107,8 @@ function stage() {
   echo-log info "adding tag $staging_tag to HEAD"
   git tag "$staging_tag"
 
-  git push origin --tags
+  git push
+  git push --tags
 
   # distribute build results
   echo-log success "sources built, distributing staging assets"
@@ -196,6 +197,7 @@ function release() {
   echo-log info "adding tag $release_tag"
   git tag "$release_tag"
 
+  git push
   git push --tags
 
   # distribute build results

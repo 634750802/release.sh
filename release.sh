@@ -72,6 +72,8 @@ function stage() {
   local branch
   local project_version
   local staging_tag
+
+  branch=$(git-current-branch)
   local staging_tag_prefix="$project_name/$branch-staging/"
 
   # check params
@@ -82,7 +84,6 @@ function stage() {
     echo-exit 1 "project path is required"
   fi
 
-  branch=$(git-current-branch)
   project_version=$(get-staging-version "$staging_tag_prefix")
   staging_tag="$staging_tag_prefix$project_version"
 
@@ -139,6 +140,8 @@ function release() {
   local staging_tag
   local release_tag
   local next_staging_tag
+
+  branch=$(git-current-branch)
   local staging_tag_prefix="$project_name/$branch-staging/"
 
   # check params
@@ -154,7 +157,6 @@ function release() {
     echo-exit 1 "HEAD was already released"
   fi
 
-  branch=$(git-current-branch)
   project_version=$(get-staging-version "$staging_tag_prefix")
   next_version=$(bump-version "$project_version")
   staging_tag="$staging_tag_prefix$project_version"

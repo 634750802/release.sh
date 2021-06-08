@@ -12,7 +12,8 @@ function build-staging-sources() {
 function distribute-staging-assets() {
   local filename="release.sh.$1.staging.zip"
 
-  if ! gh release delete -y "$1-staging" && gh release create -p "$1-staging" "$filename" --title "$1-staging" --notes ""; then
+  gh release delete -y "$1-staging"
+  if !  gh release create -p "$1-staging" "$filename" --title "$1-staging" --notes ""; then
     return 1
   fi
 

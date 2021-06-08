@@ -116,7 +116,7 @@ function stage() {
 
   # distribute build results
   echo-log success "sources built, distributing staging assets"
-  if ! distribute-staging-assets "$project_version"; then
+  if ! distribute-staging-assets "$project_version" "$staging_tag"; then
     echo-exit 1 "failed to distribute staging assets"
   fi
 }

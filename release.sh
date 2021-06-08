@@ -86,10 +86,11 @@ function stage() {
   project_version=$(get-staging-version "$staging_tag_prefix")
   staging_tag="$staging_tag_prefix$project_version"
 
-  # check if HEAD was already staged
-  if (git tag --points-at HEAD | grep -q "$staging_tag"); then
-    echo-exit 1 "HEAD was already staged"
-  fi
+  ## TODO: a better way to check if the header was a distributed head
+  # # check if HEAD was already staged
+  # if (git tag --points-at HEAD | grep -q "$staging_tag"); then
+  #   echo-exit 1 "HEAD was already staged"
+  # fi
 
   # load scripts provided by project
   echo-log log "loading $project_path/.release.sh"

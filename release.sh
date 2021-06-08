@@ -69,6 +69,10 @@ function stage() {
   local project_version
   local staging_tag
 
+  if [[ $(git tag -l | grep -c "$project_name/$branch-staging/") -gt 1 ]]; then
+    echo-exit 1 "more than one staging tags exists. please keep one and remove others:" "$(git tag -l | grep "$project_name/$branch-staging/")"
+  fi
+
   project_version=$(git tag -l | grep "$project_name/$branch-staging/" | grep -E -o "[^/]+$")
 
   if [[ -z "$project_version" ]]; then
@@ -144,6 +148,10 @@ function release() {
   local staging_tag
   local release_tag
   local next_staging_tag
+
+  if [[ $(git tag -l | grep -c "$project_name/$branch-staging/") -gt 1 ]]; then
+    echo-exit 1 "more than one staging tags exists. please keep one and remove others:" "$(git tag -l | grep "$project_name/$branch-staging/")"
+  fi
 
   project_version=$(git tag -l | grep "$project_name/$branch-staging/" | grep -E -o "[^/]+$")
 

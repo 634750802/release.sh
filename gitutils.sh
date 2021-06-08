@@ -25,6 +25,8 @@ function git-current-branch() {
   if [[ -z $branch ]]; then
     echo-exit 1 "HEAD is detached, please checkout a certain branch"
   fi
+
+  echo "$branch"
 }
 
 function git-delete-tag() {

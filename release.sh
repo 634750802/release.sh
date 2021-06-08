@@ -218,6 +218,7 @@ function release() {
 
   echo-log info "adding tag $next_staging_tag"
   git tag "$next_staging_tag"
+  git push
   git push --tags
 }
 

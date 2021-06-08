@@ -1,3 +1,13 @@
+function get-mod() {
+  if [[ "$OSTYPE" == "linux"* ]]; then
+    stat --format '%a' "$1"
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    stat -f "%OLp" "$1"
+  else
+    echo-exit 2 "$OSTYPE not supported"
+  fi
+}
+
 function verify-staging-sources() {
   echo-log success "nothing to verify for release.sh, it's a bash project"
   echo-log todo "i will add [shellcheck](https://github.com/koalaman/shellcheck) later"
@@ -47,7 +57,7 @@ function distribute-releasing-assets() {
 function set-release-version() {
   local new_version=$1
   local fmod
-  fmod=$(stat -f "%OLp" release.sh)
+  fmod=$(get-mod release.sh)
   sed "s/RELEASE_SH_VER=.*/RELEASE_SH_VER=$new_version/" release.sh >release.sh.1
   mv release.sh.1 release.sh
   chmod "$fmod" release.sh
@@ -57,7 +67,7 @@ function set-release-version() {
 function set-staging-version() {
   local new_version=$1
   local fmod
-  fmod=$(stat -f "%OLp" release.sh)
+  fmod=$(get-mod release.sh)
   sed "s/RELEASE_SH_VER=.*/RELEASE_SH_VER=$new_version-STAGING/" release.sh >release.sh.1
   mv release.sh.1 release.sh
   chmod "$fmod" release.sh

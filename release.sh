@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-RELEASE_SH_VER=1.0.8
+RELEASE_SH_VER=1.0.9-STAGING
 RELEASE_SH_DIR=$(dirname "${BASH_SOURCE[0]}")
 
 source "$RELEASE_SH_DIR/echoutils.sh"

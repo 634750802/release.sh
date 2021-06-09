@@ -14,11 +14,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: prepare release.sh
+        run: |
+          mkdir -p /opt/release.sh/
+          sh -c "$(curl https://raw.githubusercontent.com/634750802/release.sh/HEAD/download.sh)" -- /opt/release.sh/
+
       - name: release
         run: |
           git config --global user.name "Jagger's Bot"
           git config --global user.email "634750802@qq.com"
-          ./src/release.sh deinit src
-          ./src/release.sh init src ${{ github.event.inputs.newVersion }}
+          /opt/release.sh/release.sh deinit src
+          /opt/release.sh/release.sh init src ${{ github.event.inputs.newVersion }}
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

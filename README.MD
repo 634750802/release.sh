@@ -4,6 +4,10 @@ Manage mono-repo releases with git.
 
 ***WIP***
 
+## Download
+
+sh -c "$(curl https://raw.githubusercontent.com/634750802/release.sh/HEAD/download.sh)" -- <dir>
+
 ## Usages
 
 ### .release.sh

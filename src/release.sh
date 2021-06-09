@@ -3,11 +3,13 @@
 set -e
 RELEASE_SH_VER=1.1.2-STAGING
 RELEASE_SH_DIR=$(dirname "${BASH_SOURCE[0]}")
+WORKING_DIR=$(pwd)
 
 source "$RELEASE_SH_DIR/echoutils.sh"
 
-echo-log info "Release.sh version $RELEASE_SH_VER"
-echo-log info "path: ${RELEASE_SH_DIR}"
+echo-log info "version $RELEASE_SH_VER"
+echo-log info "path: $RELEASE_SH_DIR"
+echo-log info "pwd: $WORKING_DIR"
 
 source "$RELEASE_SH_DIR/gitutils.sh"
 source "$RELEASE_SH_DIR/helputils.sh"
@@ -99,15 +101,19 @@ function stage() {
 
   # verify HEAD sources (like lint or tests)
   echo-log info "verifying HEAD"
+  cd "$project_path"
   if ! verify-staging-sources "$project_version"; then
     echo-exit 1 "failed to verify HEAD"
   fi
+  cd "$WORKING_DIR"
 
   # build HEAD sources
   echo-log success "HEAD is good, building HEAD"
+  cd "$project_path"
   if ! build-staging-sources "$project_version" ; then
     echo-exit 1 "failed to build HEAD sources"
   fi
+  cd "$WORKING_DIR"
 
   # move staging tag to HEAD
   echo-log info "removing tag $staging_tag"
@@ -122,9 +128,11 @@ function stage() {
 
   # distribute build results
   echo-log info "distributing staging assets"
+  cd "$project_path"
   if ! distribute-staging-assets "$project_version" "$staging_tag"; then
     echo-exit 1 "failed to distribute staging assets"
   fi
+  cd "$WORKING_DIR"
   echo-log success "assets distributed"
 }
 
@@ -176,14 +184,19 @@ function release() {
 
   # verify HEAD sources (like lint or tests)
   echo-log info "verifying HEAD"
+  cd "$project_path"
   if ! verify-releasing-sources "$project_version"; then
     echo-exit 1 "failed to verify HEAD"
   fi
+  cd "$WORKING_DIR"
 
   # set next release version
+  echo-log info "updating version to release version"
+  cd "$project_path"
   if ! set-releasing-version "$project_version"; then
     echo-exit 1 "failed to update version"
   fi
+  cd "$WORKING_DIR"
   if ! work-tree-clean; then
     echo-log warn "set-release-version didn't commit version changes, release.sh will commit it with default message"
     git commit -am "release($project_name): $project_version"
@@ -191,9 +204,11 @@ function release() {
 
   # build HEAD sources
   echo-log info "building release assets"
+  cd "$project_path"
   if ! build-releasing-sources "$project_version"; then
     echo-exit 1 "failed to build HEAD sources"
   fi
+  cd "$WORKING_DIR"
 
   # remove staging tag for current version
   echo-log info "removing tag $staging_tag"
@@ -208,15 +223,19 @@ function release() {
 
   # distribute build results
   echo-log info "distributing staging assets"
+  cd "$project_path"
   if ! distribute-releasing-assets "$project_version" "$release_tag" "$staging_tag"; then
     echo-exit 1 "failed to distribute staging assets"
   fi
+  cd "$WORKING_DIR"
 
   # set next staging version
   echo-log info "iterating version to $next_version, this step should create a new commit with a new version"
+  cd "$project_path"
   if ! set-staging-version "$next_version" "$project_version"; then
     echo-exit 1 "failed to update version"
   fi
+  cd "$WORKING_DIR"
   if ! work-tree-clean; then
     echo-log warn "set-staging-version didn't commit version changes, release.sh will commit it with default message"
     git commit -am "chore($project_name): bump staging version to $next_version"

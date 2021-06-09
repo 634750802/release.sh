@@ -10,7 +10,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: prepare release.sh
+        run: |
+          mkdir -p /opt/release.sh/
+          /bin/bash -c "$(curl https://raw.githubusercontent.com/634750802/release.sh/HEAD/download.sh)" - /opt/release.sh/
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
       - name: stage commits
-        run: ./src/release.sh stage src
+        run: /opt/release.sh/release.sh stage src
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

@@ -34,10 +34,14 @@ function init() {
   git-fetch-tags
   # assert release or staging tag was not exists.
 
-  local project_version=$1
+  local project_path=$1
+  local project_version=$2
   local branch
 
   # check params
+  if [[ -z $project_version ]]; then
+    echo-exit 1 "project path is required"
+  fi
   if [[ -z $project_version ]]; then
     echo-exit 1 "project version is required"
   fi

@@ -17,7 +17,7 @@ jobs:
       - name: prepare release.sh
         run: |
           mkdir -p /opt/release.sh/
-          sh -c "$(curl https://raw.githubusercontent.com/634750802/release.sh/HEAD/download.sh)" -- /opt/release.sh/
+          sh -c "$(curl https://raw.githubusercontent.com/634750802/release.sh/HEAD/download.sh)" - /opt/release.sh/
 
       - name: release
         run: |

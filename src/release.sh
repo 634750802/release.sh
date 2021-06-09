@@ -34,17 +34,21 @@ function init() {
   git-fetch-tags
   # assert release or staging tag was not exists.
 
-  local project_name=$1
-  local project_version=$2
+  local project_version=$1
   local branch
 
   # check params
-  if [[ -z $project_name ]]; then
-    echo-exit 1 "project name is required"
-  fi
   if [[ -z $project_version ]]; then
     echo-exit 1 "project version is required"
   fi
+
+  # load scripts provided by project
+  echo-log log "loading $project_path/.release.sh"
+  source "$project_path/.release.sh"
+  if [[ -z "$PROJECT_NAME" ]]; then
+    echo-exit 1 "PROJECT_NAME not set"
+  fi
+  project_name=$PROJECT_NAME
 
   branch=$(git-current-branch)
 
@@ -69,19 +73,24 @@ function stage() {
   assert-work-tree-clean
   git-fetch-tags
 
-  local project_name=$1
-  local project_path=$2
+  local project_path=$1
   local branch
   local project_version
   local staging_tag
+
+
+  # load scripts provided by project
+  echo-log log "loading $project_path/.release.sh"
+  source "$project_path/.release.sh"
+  if [[ -z "$PROJECT_NAME" ]]; then
+    echo-exit 1 "PROJECT_NAME not set"
+  fi
+  project_name=$PROJECT_NAME
 
   branch=$(git-current-branch)
   local staging_tag_prefix="$project_name/$branch-staging/"
 
   # check params
-  if [[ -z $project_name ]]; then
-    echo-exit 1 "project name is required"
-  fi
   if [[ -z $project_path ]]; then
     echo-exit 1 "project path is required"
   fi
@@ -94,10 +103,6 @@ function stage() {
   # if (git tag --points-at HEAD | grep -q "$staging_tag"); then
   #   echo-exit 1 "HEAD was already staged"
   # fi
-
-  # load scripts provided by project
-  echo-log log "loading $project_path/.release.sh"
-  source "$project_path/.release.sh"
 
   # verify HEAD sources (like lint or tests)
   echo-log info "verifying HEAD"
@@ -149,13 +154,18 @@ function release() {
   local release_tag
   local next_staging_tag
 
+  # load scripts provided by project
+  echo-log log "loading $project_path/.release.sh"
+  source "$project_path/.release.sh"
+  if [[ -z "$PROJECT_NAME" ]]; then
+    echo-exit 1 "PROJECT_NAME not set"
+  fi
+  project_name=$PROJECT_NAME
+
   branch=$(git-current-branch)
   local staging_tag_prefix="$project_name/$branch-staging/"
 
   # check params
-  if [[ -z $project_name ]]; then
-    echo-exit 1 "project name is required"
-  fi
   if [[ -z $project_path ]]; then
     echo-exit 1 "project path is required"
   fi
@@ -177,10 +187,6 @@ function release() {
   fi
 
   echo-log log "releasing project $project_name @ $project_version"
-
-  # load scripts provided by project
-  echo-log log "loading $project_path/.release.sh"
-  source "$project_path/.release.sh"
 
   # verify HEAD sources (like lint or tests)
   echo-log info "verifying HEAD"

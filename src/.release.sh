@@ -1,3 +1,5 @@
+export PROJECT_NAME=release.sh
+
 function get-mod() {
   if [[ "$OSTYPE" == "linux"* ]]; then
     stat --format '%a' "$1"

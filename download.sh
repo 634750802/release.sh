@@ -14,7 +14,7 @@ if ! type gh ; then
   echo "require gh(GitHub CLI) installed"
 fi
 
-cd "$INSTALL_PATH"
+pushd "$INSTALL_PATH"
 
 LATEST_RELEASE=$(gh release list -R "$REPO" | grep Latest | awk '{ print $3 }')
 echo "latest release was: $LATEST_RELEASE"
@@ -29,3 +29,5 @@ else
   gh release download -R "$REPO" "$LATEST_RELEASE" -p "$ASSET_NAME"
   unzip -o "$ASSET_NAME"
 fi
+
+popd

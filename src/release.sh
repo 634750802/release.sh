@@ -34,6 +34,7 @@ function init() {
   git-fetch-tags
   # assert release or staging tag was not exists.
 
+  local project_name
   local project_path=$1
   local project_version=$2
   local branch

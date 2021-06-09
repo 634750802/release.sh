@@ -18,6 +18,8 @@ jobs:
         run: |
           mkdir -p /opt/release.sh/
           /bin/bash -c "$(curl https://raw.githubusercontent.com/634750802/release.sh/HEAD/download.sh)" - /opt/release.sh/
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: release
         run: |

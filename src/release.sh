@@ -12,6 +12,7 @@ echo-log info "path: $RELEASE_SH_DIR"
 echo-log info "pwd: $WORKING_DIR"
 
 source "$RELEASE_SH_DIR/gitutils.sh"
+source "$RELEASE_SH_DIR/bashutils.sh"
 source "$RELEASE_SH_DIR/helputils.sh"
 source "$RELEASE_SH_DIR/versionutils.sh"
 
@@ -70,7 +71,7 @@ function init() {
   fi
 
   cd "$project_path"
-  if (! init-staging-version "$project_version" "$staging_tag"); then
+  if (! call-or-ignore init-staging-version "$project_version" "$staging_tag"); then
     echo-exit 1 "init staging version failed"
   fi
   cd "$WORKING_DIR"
@@ -121,7 +122,7 @@ function deinit() {
     echo-exit 1 "staging tag $staging_tag for project $project_name was already exists"
   fi
 
-  if (! deinit-staging-version "$project_version" "$staging_tag"); then
+  if (! call-or-ignore deinit-staging-version "$project_version" "$staging_tag"); then
     echo-exit 1 "deinit staging version failed"
   fi
 
@@ -168,7 +169,7 @@ function stage() {
   # verify HEAD sources (like lint or tests)
   echo-log info "verifying HEAD"
   cd "$project_path"
-  if ! verify-staging-sources "$project_version"; then
+  if ! call-or-ignore verify-staging-sources "$project_version"; then
     echo-exit 1 "failed to verify HEAD"
   fi
   cd "$WORKING_DIR"
@@ -176,7 +177,7 @@ function stage() {
   # build HEAD sources
   echo-log success "HEAD is good, building HEAD"
   cd "$project_path"
-  if ! build-staging-sources "$project_version" ; then
+  if ! call-or-ignore build-staging-sources "$project_version" ; then
     echo-exit 1 "failed to build HEAD sources"
   fi
   cd "$WORKING_DIR"
@@ -195,7 +196,7 @@ function stage() {
   # distribute build results
   echo-log info "distributing staging assets"
   cd "$project_path"
-  if ! distribute-staging-assets "$project_version" "$staging_tag"; then
+  if ! call-or-ignore distribute-staging-assets "$project_version" "$staging_tag"; then
     echo-exit 1 "failed to distribute staging assets"
   fi
   cd "$WORKING_DIR"
@@ -252,7 +253,7 @@ function release() {
   # verify HEAD sources (like lint or tests)
   echo-log info "verifying HEAD"
   cd "$project_path"
-  if ! verify-releasing-sources "$project_version"; then
+  if ! call-or-ignore verify-releasing-sources "$project_version"; then
     echo-exit 1 "failed to verify HEAD"
   fi
   cd "$WORKING_DIR"
@@ -260,7 +261,7 @@ function release() {
   # set next release version
   echo-log info "updating version to release version"
   cd "$project_path"
-  if ! set-releasing-version "$project_version"; then
+  if ! call-or-ignore set-releasing-version "$project_version"; then
     echo-exit 1 "failed to update version"
   fi
   cd "$WORKING_DIR"
@@ -272,7 +273,7 @@ function release() {
   # build HEAD sources
   echo-log info "building release assets"
   cd "$project_path"
-  if ! build-releasing-sources "$project_version"; then
+  if ! call-or-ignore build-releasing-sources "$project_version"; then
     echo-exit 1 "failed to build HEAD sources"
   fi
   cd "$WORKING_DIR"
@@ -291,7 +292,7 @@ function release() {
   # distribute build results
   echo-log info "distributing staging assets"
   cd "$project_path"
-  if ! distribute-releasing-assets "$project_version" "$release_tag" "$staging_tag"; then
+  if ! call-or-ignore distribute-releasing-assets "$project_version" "$release_tag" "$staging_tag"; then
     echo-exit 1 "failed to distribute staging assets"
   fi
   cd "$WORKING_DIR"
@@ -299,7 +300,7 @@ function release() {
   # set next staging version
   echo-log info "iterating version to $next_version, this step should create a new commit with a new version"
   cd "$project_path"
-  if ! set-staging-version "$next_version" "$project_version"; then
+  if ! call-or-ignore set-staging-version "$next_version" "$project_version"; then
     echo-exit 1 "failed to update version"
   fi
   cd "$WORKING_DIR"

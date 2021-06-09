@@ -74,6 +74,46 @@ function init() {
   git push origin --tags
 }
 
+function deinit() {
+  assert-work-tree-clean
+  git-fetch-tags
+  # assert release or staging tag was not exists.
+
+  local project_name
+  local project_path=$1
+  local project_version=$2
+  local branch
+
+  # check params
+  if [[ -z $project_version ]]; then
+    echo-exit 1 "project path is required"
+  fi
+  if [[ -z $project_version ]]; then
+    echo-exit 1 "project version is required"
+  fi
+
+  # load scripts provided by project
+  echo-log log "loading $project_path/.release.sh"
+  source "$project_path/.release.sh"
+  if [[ -z "$PROJECT_NAME" ]]; then
+    echo-exit 1 "PROJECT_NAME not set"
+  fi
+  project_name=$PROJECT_NAME
+
+  branch=$(git-current-branch)
+
+  echo-log log "initializing project $project_name @ $project_version on branch $branch"
+
+  local staging_tag="$project_name/$branch-staging/$project_version"
+  if (! git-tag-exists "$staging_tag"); then
+    echo-exit 1 "staging tag $staging_tag for project $project_name was already exists"
+  fi
+
+  echo-log info "deleting tag $staging_tag"
+  git tag -d "$staging_tag"
+  git push origin --delete "$staging_tag"
+}
+
 function stage() {
   assert-work-tree-clean
   git-fetch-tags
@@ -261,6 +301,10 @@ function release() {
 case $1 in
 init)
   init "${@:2}"
+  exit 0
+  ;;
+deinit)
+  deinit "${@:2}"
   exit 0
   ;;
 release)

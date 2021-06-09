@@ -1,7 +1,12 @@
-name: Release
+name: Change staging version
 
 on:
   workflow_dispatch:
+    inputs:
+      newVersion:
+        description: 'New version'
+        required: true
+        default: ''
 
 jobs:
   build:
@@ -13,6 +18,7 @@ jobs:
         run: |
           git config --global user.name "Jagger's Bot"
           git config --global user.email "634750802@qq.com"
-          ./src/release.sh release src
+          ./src/release.sh deinit src
+          ./src/release.sh init src ${{ github.event.inputs.newVersion }}
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

@@ -81,15 +81,12 @@ function deinit() {
 
   local project_name
   local project_path=$1
-  local project_version=$2
+  local project_version
   local branch
 
   # check params
-  if [[ -z $project_version ]]; then
+  if [[ -z $project_path ]]; then
     echo-exit 1 "project path is required"
-  fi
-  if [[ -z $project_version ]]; then
-    echo-exit 1 "project version is required"
   fi
 
   # load scripts provided by project
@@ -101,8 +98,10 @@ function deinit() {
   project_name=$PROJECT_NAME
 
   branch=$(git-current-branch)
+  local staging_tag_prefix="$project_name/$branch-staging/"
+  project_version=$(get-staging-version "$staging_tag_prefix")
 
-  echo-log log "initializing project $project_name @ $project_version on branch $branch"
+  echo-log log "deinitializing project $project_name @ $project_version on branch $branch"
 
   local staging_tag="$project_name/$branch-staging/$project_version"
   if (! git-tag-exists "$staging_tag"); then

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-RELEASE_SH_VER=1.2.0
+RELEASE_SH_VER=1.2.1-STAGING
 RELEASE_SH_DIR=$(dirname "${BASH_SOURCE[0]}")
 WORKING_DIR=$(pwd)
 

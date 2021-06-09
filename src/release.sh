@@ -207,8 +207,7 @@ function release() {
   assert-work-tree-clean
   git-fetch-tags
 
-  local project_name=$1
-  local project_path=$2
+  local project_path=$1
   local branch
   local project_version
   local next_version

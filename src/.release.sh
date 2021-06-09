@@ -10,6 +10,16 @@ function get-mod() {
   fi
 }
 
+function init-staging-version() {
+  set-staging-version "$1"
+  return $?
+}
+
+function deinit-staging-version() {
+  gh release delete -y "$2"
+  return $?
+}
+
 function verify-staging-sources() {
   echo-log success "nothing to verify for release.sh, it's a bash project"
   echo-log todo "i will add [shellcheck](https://github.com/koalaman/shellcheck) later"

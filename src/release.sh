@@ -69,6 +69,19 @@ function init() {
     echo-exit 1 "staging tag $staging_tag for project $project_name was already exists"
   fi
 
+  cd "$project_path"
+  if (! init-staging-version "$project_version" "$staging_tag"); then
+    echo-exit 1 "init staging version failed"
+  fi
+  cd "$WORKING_DIR"
+  if ! work-tree-clean; then
+    echo-log warn "init-staging-version didn't commit version changes, release.sh will commit it with default message"
+    git commit -am "chore($project_name): initialize staging version $next_version"
+  fi
+
+  echo-log info "pushing changes to origin"
+  git push
+
   echo-log info "creating tag $staging_tag"
   git tag "$staging_tag"
   git push origin --tags
@@ -106,6 +119,10 @@ function deinit() {
   local staging_tag="$project_name/$branch-staging/$project_version"
   if (! git-tag-exists "$staging_tag"); then
     echo-exit 1 "staging tag $staging_tag for project $project_name was already exists"
+  fi
+
+  if (! deinit-staging-version "$project_version" "$staging_tag"); then
+    echo-exit 1 "deinit staging version failed"
   fi
 
   echo-log info "deleting tag $staging_tag"

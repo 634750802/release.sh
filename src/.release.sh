@@ -32,7 +32,7 @@ function build-release-note() {
   echo ""
   echo "## Others"
   echo ""
-  echo "$log" | grep -vE "\s+(feat|fix|opt)(\([^)]+\))?:" | grep -E "." | sed -e 's/^/- /'
+  echo "$log" | grep -vE "\s+(feat|fix|opt|release)(\([^)]+\))?:" | grep -E "." | sed -e 's/^/- /'
 }
 
 function init-staging-version() {

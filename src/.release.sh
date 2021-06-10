@@ -10,6 +10,30 @@ function get-mod() {
   fi
 }
 
+function build-release-note() {
+  local log
+  log=$(git-pretty-log "$(git-last-release)" HEAD)
+  echo "# Release Notes"
+  echo "## Features"
+  echo ""
+  echo "$log" | grep -E "\s+feat(\([^)]+\))?:" | sed -e 's/^/- /'
+  echo ""
+  echo ""
+  echo "## Bug fixes"
+  echo ""
+  echo "$log" | grep -E "\s+fix(\([^)]+\))?:" | sed -e 's/^/- /'
+  echo ""
+  echo ""
+  echo "## Optimizes"
+  echo ""
+  echo "$log" | grep -E "\s+opt(\([^)]+\))?:" | sed -e 's/^/- /'
+  echo ""
+  echo ""
+  echo "## Others"
+  echo ""
+  echo "$log" | grep -vE "\s+(feat|fix|opt)(\([^)]+\))?:" | sed -e 's/^/- /'
+}
+
 function init-staging-version() {
   set-staging-version "$1"
   return $?
@@ -35,7 +59,7 @@ function distribute-staging-assets() {
   local filename="release.sh.$1.staging.zip"
 
   gh release delete -y "$2"
-  if ! gh release create -p "$2" "$filename" --title "$1-staging" --notes ""; then
+  if ! gh release create -p "$2" "$filename" --title "$1-staging" --notes "$(build-release-note)"; then
     return 1
   fi
 
@@ -59,7 +83,7 @@ function distribute-releasing-assets() {
 
   # release assets wherever you want other than github
   gh release delete -y "$3"
-  if ! gh release create "$2" "$filename" --title "$1" --notes ""; then
+  if ! gh release create "$2" "$filename" --title "$1" --notes "$(build-release-note)"; then
     return 1
   fi
 

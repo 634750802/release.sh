@@ -39,3 +39,24 @@ function git-tag-exists() {
   git tag -l | grep -q -e "$1"
   return $?
 }
+
+function git-last-release() {
+  git tag -l | sort -r | grep "/release/" | head -1
+  return $?
+}
+
+function git-pretty-log() {
+  local start=$1
+  local end=$2
+  local range
+  if [[ -z "$end" ]]; then
+    end=HEAD
+  fi
+  if [[ -z "$start" ]]; then
+    range="$end"
+  else
+    range="$start...$end"
+  fi
+  git log --pretty=format:"[%h] %s <@%an>" "$range"
+  return $?
+}

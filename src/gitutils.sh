@@ -40,8 +40,8 @@ function git-tag-exists() {
   return $?
 }
 
-function git-last-release() {
-  git tag -l | sort -r | grep "/release/" | head -1
+function git-last-releases() {
+  git tag -l | sort -r | grep "/release/" | head -2
   return $?
 }
 

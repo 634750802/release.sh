@@ -12,7 +12,8 @@ function get-mod() {
 
 function build-release-note() {
   local log
-  log=$(git-pretty-log "$(git-last-release)" HEAD)
+  # shellcheck disable=SC2046
+  log=$(git-pretty-log $(git-last-releases))
   echo "# Release Notes"
   echo "## Features"
   echo ""
@@ -31,7 +32,7 @@ function build-release-note() {
   echo ""
   echo "## Others"
   echo ""
-  echo "$log" | grep -vE "\s+(feat|fix|opt)(\([^)]+\))?:" | sed -e 's/^/- /'
+  echo "$log" | grep -vE "\s+(feat|fix|opt)(\([^)]+\))?:" | grep -E "." | sed -e 's/^/- /'
 }
 
 function init-staging-version() {
